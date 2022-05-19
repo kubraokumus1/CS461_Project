@@ -46,6 +46,13 @@ public class GameManager : MonoBehaviour
 
 
         foreach (Transform pellet in pellets) {
+            if(pellet.name == "PowerPellet(Clone)"){
+                print("Pellet : " + pellet.name);
+                pellet.position = new Vector3(12.5f, 12.5f, -5.0f);
+
+            }
+            
+
             pellet.gameObject.SetActive(true);
         }
 

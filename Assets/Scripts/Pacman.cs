@@ -11,18 +11,21 @@ public class Pacman : MonoBehaviour
     public Movement movement { get; private set; }
 
     private List<Vector3> actions;
+    Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
+    Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
         movement = GetComponent<Movement>();
-        actions = bfs();
-        foreach(Vector3 pos in actions){
+        actions = UCS();
+        foreach (Vector3 pos in actions)
+        {
             print(pos);
         }
         actions.RemoveAt(0);
-    
+
 
 
     }
@@ -45,7 +48,8 @@ public class Pacman : MonoBehaviour
 
 
         movement.SetDirection(normalize(actions[0], transform.position));
-        if(Vector3.Distance(actions[0], transform.position)<0.2f){
+        if (Vector3.Distance(actions[0], transform.position) < 0.2f)
+        {
             actions.RemoveAt(0);
         }
 
@@ -57,28 +61,36 @@ public class Pacman : MonoBehaviour
 
     }
 
-    private Vector3 normalize(Vector3 action, Vector3 pos){
-        if(Math.Abs(action.x - pos.x)>Math.Abs(action.y-pos.y)){
-            return new Vector3((action.x-pos.x)/Math.Abs(action.x-pos.x), 0f, 0f);
+    private Vector3 normalize(Vector3 action, Vector3 pos)
+    {
+        if (Math.Abs(action.x - pos.x) > Math.Abs(action.y - pos.y))
+        {
+            return new Vector3((action.x - pos.x) / Math.Abs(action.x - pos.x), 0f, 0f);
         }
-        else{
-            return new Vector3(0f, (action.y-pos.y)/Math.Abs(action.y-pos.y), 0f);
+        else
+        {
+            return new Vector3(0f, (action.y - pos.y) / Math.Abs(action.y - pos.y), 0f);
         }
     }
 
 
-    private List<Vector3> getSuccessor(Vector3 position){
+    private List<Vector3> getSuccessor(Vector3 position)
+    {
         List<Vector3> successors = new List<Vector3>();
-        if(movement.isAvailable(Vector2.right, position)){
+        if (movement.isAvailable(Vector2.right, position))
+        {
             successors.Add(position + Vector3.right);
         }
-        if(movement.isAvailable(Vector2.left, position)){
+        if (movement.isAvailable(Vector2.left, position))
+        {
             successors.Add(position + Vector3.left);
         }
-        if(movement.isAvailable(Vector2.up, position)){
+        if (movement.isAvailable(Vector2.up, position))
+        {
             successors.Add(position + Vector3.up);
         }
-        if(movement.isAvailable(Vector2.down, position)){
+        if (movement.isAvailable(Vector2.down, position))
+        {
             successors.Add(position + Vector3.down);
         }
         return successors;
@@ -89,23 +101,26 @@ public class Pacman : MonoBehaviour
     {
         Stack<Vector3> position = new Stack<Vector3>();
         Stack<List<Vector3>> path = new Stack<List<Vector3>>();
-        Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
-        Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
+       // Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
+       // Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
         List<Vector3> visited = new List<Vector3>();
 
         position.Push(start);
         List<Vector3> path1 = new List<Vector3>();
         path1.Add(start);
 
-        while(position.Count != 0){
+        while (position.Count != 0)
+        {
             Vector3 vertex = position.Pop();
             List<Vector3> actions = new List<Vector3>();
-            if(path.Count != 0){
+            if (path.Count != 0)
+            {
                 actions = path.Pop();
             }
 
             //return path when pacman is close enough to goal
-            if(Vector3.Distance(vertex, goal)<0.5f){
+            if (Vector3.Distance(vertex, goal) < 0.5f)
+            {
                 return actions;
             }
 
@@ -114,7 +129,8 @@ public class Pacman : MonoBehaviour
             {
                 List<Vector3> tmp = new List<Vector3>(actions);
                 print(successor);
-                if(!visited.Contains(successor)){
+                if (!visited.Contains(successor))
+                {
                     tmp.Add(successor);
                     path.Push(tmp);
                     visited.Add(vertex);
@@ -130,23 +146,26 @@ public class Pacman : MonoBehaviour
     {
         Queue<Vector3> position = new Queue<Vector3>();
         Queue<List<Vector3>> path = new Queue<List<Vector3>>();
-        Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
-        Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
+        //Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
+        //Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
         List<Vector3> visited = new List<Vector3>();
 
         position.Enqueue(start);
         List<Vector3> path1 = new List<Vector3>();
         path1.Add(start);
 
-        while(position.Count != 0){
+        while (position.Count != 0)
+        {
             Vector3 vertex = position.Dequeue();
             List<Vector3> actions = new List<Vector3>();
-            if(path.Count != 0){
+            if (path.Count != 0)
+            {
                 actions = path.Dequeue();
             }
 
             //return path when pacman is close enough to goal
-            if(Vector3.Distance(vertex, goal)<0.5f){
+            if (Vector3.Distance(vertex, goal) < 0.5f)
+            {
                 return actions;
             }
 
@@ -155,7 +174,8 @@ public class Pacman : MonoBehaviour
             {
                 List<Vector3> tmp = new List<Vector3>(actions);
                 print(successor);
-                if(!visited.Contains(successor)){
+                if (!visited.Contains(successor))
+                {
                     tmp.Add(successor);
                     path.Enqueue(tmp);
                     visited.Add(vertex);
@@ -165,12 +185,45 @@ public class Pacman : MonoBehaviour
         }
         return new List<Vector3>();
     }
-
-
-
+    
     private List<Vector3> UCS()
     {
-        ///////////////////////////
+        int totalCost = 0;
+        PriorityQueue<int, State> queue = new PriorityQueue<int, State>();
+        //Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
+        //Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
+
+        List<Vector3> actions = new List<Vector3>();
+        actions.Add(start);
+
+        State startState = new State(start, actions, 0);
+        queue.Enqueue(0, startState);
+        List<Vector3> visited = new List<Vector3>();
+
+
+        while (queue.Count != 0)
+        {
+            State currState = queue.Dequeue();
+
+            if (!visited.Contains(currState.Position))
+            {
+                visited.Add(currState.Position);
+                if (Vector3.Distance(currState.Position, goal) < 0.5f)
+                {
+                    return currState.Actions;
+                }
+
+                foreach (Vector3 successor in getSuccessor(currState.Position))
+                {
+                    List<Vector3> tmpActions = new List<Vector3>(actions);
+                    tmpActions.Add(successor);
+                    totalCost = currState.Cost + 1;
+                    State newstate = new State(successor, tmpActions, totalCost);
+                    queue.Enqueue(totalCost, newstate);
+                }
+
+            }
+        }
         return new List<Vector3>();
     }
 
