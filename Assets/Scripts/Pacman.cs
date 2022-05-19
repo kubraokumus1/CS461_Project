@@ -12,7 +12,7 @@ public class Pacman : MonoBehaviour
 
     private List<Vector3> actions;
     Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
-    public static Vector3 goal = new Vector3(-12.5f, 12.5f, -5.0f);
+    public static Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
 
     private void Awake()
     {
@@ -20,7 +20,7 @@ public class Pacman : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
         movement = GetComponent<Movement>();
-        actions = UCS();
+        actions = Astar();
         foreach (Vector3 pos in actions)
         {
             print("Action: " + pos);
@@ -230,8 +230,49 @@ public class Pacman : MonoBehaviour
     }
 
 
+
+    private int heuristic(Vector3 current, Vector3 goal)
+    {
+
+        return (int)Math.Abs(current.x - goal.x) + (int)Math.Abs(current.y - goal.y);
+    }
     private List<Vector3> Astar()
     {
+        int totalCost = 0;
+        PriorityQueue<int, State> queue = new PriorityQueue<int, State>();
+
+        List<Vector3> actions = new List<Vector3>();
+        actions.Add(start);
+
+        State startState = new State(start, actions, 0);
+        queue.Enqueue(0, startState);
+        List<Vector3> visited = new List<Vector3>();
+
+
+        while (queue.Count != 0)
+        {
+            print(queue.Count);
+            State currState = queue.Dequeue();
+
+            if (!visited.Contains(currState.Position))
+            {
+                visited.Add(currState.Position);
+                if (Vector3.Distance(currState.Position, goal) < 0.5f)
+                {
+                    return currState.Actions;
+                }
+
+                foreach (Vector3 successor in getSuccessor(currState.Position))
+                {
+                    List<Vector3> tmpActions = new List<Vector3>(currState.Actions);
+                    tmpActions.Add(successor);
+                    totalCost = currState.Cost + 1 + heuristic(successor, goal);
+                    State newstate = new State(successor, tmpActions, totalCost);
+                    queue.Enqueue(totalCost, newstate);
+                }
+
+            }
+        }
         ///////////////////////////
         return new List<Vector3>();
     }
