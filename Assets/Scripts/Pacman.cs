@@ -12,17 +12,18 @@ public class Pacman : MonoBehaviour
 
     private List<Vector3> actions;
     Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
-    Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
+    public static Vector3 goal = new Vector3(-12.5f, 12.5f, -5.0f);
 
     private void Awake()
     {
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
         movement = GetComponent<Movement>();
         actions = UCS();
         foreach (Vector3 pos in actions)
         {
-            print(pos);
+            print("Action: " + pos);
         }
         actions.RemoveAt(0);
 
@@ -101,8 +102,8 @@ public class Pacman : MonoBehaviour
     {
         Stack<Vector3> position = new Stack<Vector3>();
         Stack<List<Vector3>> path = new Stack<List<Vector3>>();
-       // Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
-       // Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
+        // Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
+        // Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
         List<Vector3> visited = new List<Vector3>();
 
         position.Push(start);
@@ -185,7 +186,7 @@ public class Pacman : MonoBehaviour
         }
         return new List<Vector3>();
     }
-    
+
     private List<Vector3> UCS()
     {
         int totalCost = 0;
@@ -203,6 +204,7 @@ public class Pacman : MonoBehaviour
 
         while (queue.Count != 0)
         {
+            print(queue.Count);
             State currState = queue.Dequeue();
 
             if (!visited.Contains(currState.Position))
@@ -215,7 +217,7 @@ public class Pacman : MonoBehaviour
 
                 foreach (Vector3 successor in getSuccessor(currState.Position))
                 {
-                    List<Vector3> tmpActions = new List<Vector3>(actions);
+                    List<Vector3> tmpActions = new List<Vector3>(currState.Actions);
                     tmpActions.Add(successor);
                     totalCost = currState.Cost + 1;
                     State newstate = new State(successor, tmpActions, totalCost);
