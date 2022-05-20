@@ -1,9 +1,14 @@
-# Pac-man (2D)
+## Pac-man (2D)
+# DFS:
+<img src="DFS.gif" width="350"/>
 
-> Pac-Man is a maze action game developed and released by Namco for arcades in 1980. The player controls Pac-Man, who must eat all the dots inside an enclosed maze while avoiding four colored ghosts. Eating large flashing dots called "Power Pellets" causes the ghosts to turn blue, allowing Pac-Man to eat them for bonus points.
+# BFS:
+<img src="BFS.gif" width="350"/>
 
-- **Difficulty**: Advanced
-- **Topics**: Sprites, Tilemaps, AI
-- **Version**: Unity 2021.2
-- [**Download**](https://github.com/zigurous/unity-pacman-tutorial/archive/refs/heads/main.zip)
-- [**Watch Video**](https://youtu.be/TKt_VlMn_aA)
+# UCS:
+<img src="UCS.gif" width="350"/>
+
+# A*
+<img src="AStar.gif" width="350"/>
+
+
