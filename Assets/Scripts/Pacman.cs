@@ -14,21 +14,34 @@ public class Pacman : MonoBehaviour
     Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
     public static Vector3 goal = new Vector3(12.5f, 12.5f, -5.0f);
 
+    public static int i;
+
     private void Awake()
     {
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         collider = GetComponent<Collider2D>();
         movement = GetComponent<Movement>();
-        actions = Astar();
-        foreach (Vector3 pos in actions)
+
+        switch (i)
         {
-            print("Action: " + pos);
+            case 0:
+                actions = bfs();
+                break;
+            case 1:
+                actions = dfs();
+                break;
+            case 2:
+                actions = UCS();
+                break;
+            case 3:
+                actions = Astar();
+                break;
+
         }
+
+        print("cost : " + actions.Count);
         actions.RemoveAt(0);
-
-
-
     }
 
     private void Update()
@@ -47,18 +60,21 @@ public class Pacman : MonoBehaviour
         //     movement.SetDirection(Vector2.right);
         // }
 
-
-        movement.SetDirection(normalize(actions[0], transform.position));
-        if (Vector3.Distance(actions[0], transform.position) < 0.2f)
+        if (actions.Count == 0)
         {
-            actions.RemoveAt(0);
+            FindObjectOfType<GameManager>().GoalReached();
+        }
+        else{
+            movement.SetDirection(normalize(actions[0], transform.position));
+            if (Vector3.Distance(actions[0], transform.position) < 0.2f)
+            {
+                actions.RemoveAt(0);
+            }
         }
 
         // Rotate pacman to face the movement direction
         float angle = Mathf.Atan2(movement.direction.y, movement.direction.x);
         transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
-
-
 
     }
 
@@ -100,6 +116,7 @@ public class Pacman : MonoBehaviour
 
     private List<Vector3> dfs()
     {
+        print("dfs");
         Stack<Vector3> position = new Stack<Vector3>();
         Stack<List<Vector3>> path = new Stack<List<Vector3>>();
         // Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
@@ -129,7 +146,7 @@ public class Pacman : MonoBehaviour
             foreach (Vector3 successor in getSuccessor(vertex))
             {
                 List<Vector3> tmp = new List<Vector3>(actions);
-                print(successor);
+                //    print(successor);
                 if (!visited.Contains(successor))
                 {
                     tmp.Add(successor);
@@ -145,6 +162,7 @@ public class Pacman : MonoBehaviour
 
     private List<Vector3> bfs()
     {
+        print("bfs");
         Queue<Vector3> position = new Queue<Vector3>();
         Queue<List<Vector3>> path = new Queue<List<Vector3>>();
         //Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
@@ -174,7 +192,7 @@ public class Pacman : MonoBehaviour
             foreach (Vector3 successor in getSuccessor(vertex))
             {
                 List<Vector3> tmp = new List<Vector3>(actions);
-                print(successor);
+                // print(successor);
                 if (!visited.Contains(successor))
                 {
                     tmp.Add(successor);
@@ -189,6 +207,7 @@ public class Pacman : MonoBehaviour
 
     private List<Vector3> UCS()
     {
+        print("ucs");
         int totalCost = 0;
         PriorityQueue<int, State> queue = new PriorityQueue<int, State>();
         //Vector3 start = new Vector3(0.5f, -9.5f, -5.0f);
@@ -204,7 +223,6 @@ public class Pacman : MonoBehaviour
 
         while (queue.Count != 0)
         {
-            print(queue.Count);
             State currState = queue.Dequeue();
 
             if (!visited.Contains(currState.Position))
@@ -238,6 +256,7 @@ public class Pacman : MonoBehaviour
     }
     private List<Vector3> Astar()
     {
+        print("astar");
         int totalCost = 0;
         PriorityQueue<int, State> queue = new PriorityQueue<int, State>();
 
@@ -251,7 +270,6 @@ public class Pacman : MonoBehaviour
 
         while (queue.Count != 0)
         {
-            print(queue.Count);
             State currState = queue.Dequeue();
 
             if (!visited.Contains(currState.Position))
@@ -273,7 +291,6 @@ public class Pacman : MonoBehaviour
 
             }
         }
-        ///////////////////////////
         return new List<Vector3>();
     }
 
