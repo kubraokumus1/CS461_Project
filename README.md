@@ -1,4 +1,8 @@
 ## Pac-man (2D)
+
+The search algoritm can be selected in the pacman scene's GameManager inspector.
+<img src="image.png" width="350"/>
+
 # DFS:
 <img src="DFS.gif" width="350"/>
 
