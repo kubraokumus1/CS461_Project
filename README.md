@@ -1,4 +1,4 @@
-## Pac-man (2D)
+## Pac-man (2D) - TEAM 13
 
 The search algoritm can be selected in the pacman scene's GameManager inspector.
 
