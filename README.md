@@ -1,13 +1,14 @@
-# Pac-man (2D)
-DFS:
+## Pac-man (2D)
+# DFS:
 ![](DFS.gif)
+<img src="DFS.gif" width="250" height="250"/>
 
-BFS:
+# BFS:
 ![](BFS.gif)
 
-UCS:
+# UCS:
 ![](UCS.gif)
 
-A*
+# A*
 ![](AStar.gif)
 
